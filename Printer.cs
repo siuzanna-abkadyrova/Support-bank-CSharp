@@ -4,9 +4,16 @@ namespace SupportBank;
 
 public class Printer
 {
-    public static void PrintAllPeople(Dictionary<string, List<Transaction>> peopleTransactions)
+    public static void PrintAllPeople(Dictionary<string, List<Transaction>> transactionsByPerson)
     {
-        foreach (var kvp in peopleTransactions)
+        if (transactionsByPerson.Count == 0)
+        {
+            Console.WriteLine("No transactions found. Please import file.");
+            
+            return;
+        }
+        
+        foreach (var kvp in transactionsByPerson)
         {
             string name = kvp.Key;
             double owes = kvp.Value.Where(transaction => transaction.From == name)
@@ -19,6 +26,12 @@ public class Printer
 
     public static void PrintPersonTransactions(List<Transaction> transactions)
     {
+        if (transactions.Count == 0)
+        {
+            Console.WriteLine("No transactions found.");
+            
+            return;
+        }
         foreach (var transaction in transactions)
         {
             Console.WriteLine($"{transaction.Date} from: {transaction.From} to: {transaction.To} narrative: {transaction.Narrative} amount: {transaction.Amount}");
