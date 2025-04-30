@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Xml.Linq;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Newtonsoft.Json;
@@ -21,6 +22,10 @@ public class FileParser
         {
             return ParseCSV(filename);
         }
+        else if (fileExtension == ".xml")
+        {
+            return ParseXml(filename);
+        }
         else
         {
             Console.WriteLine("Unsupported file type.");
@@ -32,6 +37,24 @@ public class FileParser
         string jsonContent = File.ReadAllText(filename);
         List<Transaction> transactions = JsonConvert.DeserializeObject<List<Transaction>>(jsonContent) ?? new List<Transaction>();
         
+        return transactions;
+    }
+
+    private static List<Transaction> ParseXml(string filename)
+    {
+        XDocument doc = XDocument.Load(filename);
+        
+        var transactions = doc.Descendants("SupportTransaction")
+            .Select(transactionElement => new Transaction
+            {
+                Date = (string)transactionElement.Attribute("Date"),
+                From = (string)transactionElement.Element("Parties")?.Element("From"),
+                To = (string)transactionElement.Element("Parties")?.Element("To"),
+                Narrative = (string)transactionElement.Element("Description"),
+                Amount = (double)transactionElement.Element("Value")
+            })
+            .ToList();
+
         return transactions;
     }
     
