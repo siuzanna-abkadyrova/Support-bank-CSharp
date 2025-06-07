@@ -10,21 +10,21 @@ namespace SupportBank;
 public class FileParser
 {
     private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-    public static List<Transaction>? Parse(string filename)
+    public static List<Transaction>? Parse(string fileName)
     {
-        string fileExtension = Path.GetExtension(filename).ToLower();
+        string fileExtension = Path.GetExtension(fileName).ToLower();
 
         if (fileExtension == ".json")
         {
-            return ParseJSON(filename);
+            return ParseJSON(fileName);
         }
         else if (fileExtension == ".csv")
         {
-            return ParseCSV(filename);
+            return ParseCSV(fileName);
         }
         else if (fileExtension == ".xml")
         {
-            return ParseXml(filename);
+            return ParseXml(fileName);
         }
         else
         {
